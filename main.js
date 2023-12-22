@@ -8,5 +8,5 @@ app.use(express.static('public'))
 app.use(express.static('public/html'))
 
 app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+  console.log(`Running on http://localhost:${port}`);
 });

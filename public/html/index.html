@@ -6,16 +6,24 @@
 		<link rel="stylesheet" href="css/photospheres.css">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	</head>
-	<body>
+	<body onclick="playaudio()">
+		<audio id="music">
+			<source src="jinglebell.mp3"/>
+		</audio>
 		<script src="js/three/three.min.js"></script>
 		<script src="js/three/Projector.js"></script>
 		<script src="js/three/CanvasRenderer.js"></script>
+		<!-- <script src="js/particles.js"></script>
+		<script src="js/app.js"></script> -->
 
 		<script>
+			var x = document.getElementById("music");
+      		function playaudio() {
+        		x.play();
+      		}
+
 			var cameraController;
 			var container;
-			var backButton;
-			var nextButton;
 			var blogtext;
 			var isDragging;
 			var camera, scene, renderer;
@@ -31,6 +39,8 @@
 			var distance;
 			var textArray;
 			var info;
+
+			var meshList = [];
 
 			function getParameterByName(name){
 				url = window.location.href;
@@ -54,26 +64,13 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				nextButton = document.createElement('BUTTON');
-				var buttonNextArrow = document.createTextNode('>');
-				nextButton.appendChild(buttonNextArrow);
-				nextButton.id = "nextbutton";
-				nextButton.onclick = nextIndex;
-				container.appendChild(nextButton);
-
-				backButton = document.createElement('BUTTON');
-				var buttonBackArrow = document.createTextNode('<');
-				backButton.appendChild(buttonBackArrow);
-				backButton.id = "backbutton";
-				backButton.onclick = prevIndex;
-				container.appendChild(backButton);
-
 				info = document.createElement( 'div' );
 				info.style.position = 'absolute';
-				info.style.top = '10px';
+				info.style.top = '50px';
 				info.style.width = '100%';
 				info.style.textAlign = 'center';
 				info.style.opacity = '0.5';
+				info.style.color = 'white';
 				info.innerHTML = 'Double click to enter';
 				container.appendChild( info );
 
@@ -86,19 +83,16 @@
 				container.appendChild(blogtext);
 
 				scene = new THREE.Scene();
+				scene.background = new THREE.Color(0x2e3440);
 
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
 				camera.position.x = 300 * index;
 				camera.position.y = 55;
 				camera.position.z = 250;
 
-				imageArray = ['img/photospheres/portrerogarden.jpg', 'img/photospheres/nb.jpg', 'img/photospheres/night.jpg', 'img/photospheres/ship.jpg', 'img/photospheres/duboce2.jpg'];
+				imageArray = ['img/photospheres/xmas.jpg'];
 
-				textArray = ['PORTRERO GARDEN <br>  <a href="http://maps.google.com/maps?q=37.759844,-122.405364" target="_blank"> 37.759844, -122.405364</a> <br> <br> A community garden on top of a hill, that is blooming with fruits, vegetables, and ornamentals. A sign at the entrance mentions that before the garden was established in 1970, it was home to the "Goat Lady" of Portrero Hill. She used this vacant land to graze her herd.',
-				'NOISEBRIDGE <br> <a href="http://maps.google.com/maps?q=37.762422,-122.419380" target="_blank" > 37.762422, -122.419380</a> <br> <br> A hackerspace of your dreams, fully stocked with an electronics lab, wood shop, craft supplies, libNoiseBridge, and creative collaboration. This space is constantly evolving due to its doocratic philosophy, and will definitely feul your inner creative hacker. <br> <br> API\'s and IPA\'s flourish here.',
-				'BUCHANAN ST <br> <a href="http://maps.google.com/maps?q=37.770675,-122.426804" target="_blank"> 37.770675, -122.426804</a> <br> <br>  I want to lay down here, right in the middle but a little under the metallic surface, and just watch the cars fly over me. ',
-				'SHIPYARD <br> <a href="http://maps.google.com/maps?q=37.724567,-122.367422" target="_blank"> 37.724567, -122.367422</a> <br> <br>  All this land has been forgotten. These are abandoned US Navy factories that used to be booming with the construction of navy ships during World War II. However, today all that is remaining is a desolate concrete jungle with "danger no entry" or "danger hazardous material" signs everywhere you turn. <br><br> Are there really? <br> <br> We were kicked out shortly after this photo was taken, apparently there are reminent radioactive materials here, and children are not allowed.',
-				'DUBOCE <br> <a href="http://duboceengineering.com/" target="_blank"> N/A</a> <br> <br>  This is my humble abode. There are 6 of us living here + a miscellaneous number of french visitors. A typical day at Duboce may consist of lockpicking, hacking the world, existential dark-room music sessions, tea, and keith-parties. <br> <br> Please visit anytime and follow the signs to take your shoes off at the door. <br> <br> FYI: Showers may or may not work and there is a family living in the bike storage room. ',]
+				textArray = ['Merry Christmas 2023 <br> <br> We wish you a Merry Christmas. <br> We wish you a Merry Christmas. <br> We wish you a Merry Christmas. <br> And a Happy New Year.']
 				numSpheres = imageArray.length;
 				sphereArray = [];
 				meshSphereArray = [];
@@ -124,13 +118,27 @@
 				//adding my basic wiremesh spheres
 				for (i=0; i<numSpheres; i++){
 					meshSphereArray.push(new THREE.Mesh(
-							new THREE.SphereGeometry(105, 32, 32),
-							new THREE.MeshBasicMaterial({
-								color : 0xffffff,
-								wireframe : true
-							})));
+						new THREE.SphereGeometry(105, 32, 32),
+						new THREE.MeshBasicMaterial({
+							color : 0xffffff,
+							transparent : true,
+							opacity : 0.2
+							})
+						));
+						
 					meshSphereArray[i].position.set (300*i,0,0);
 					scene.add(meshSphereArray[i]);
+
+					const mesh = new THREE.Mesh(
+						new THREE.SphereGeometry(60, 64, 64, 6, 6, 1, 0.8),
+						new THREE.MeshBasicMaterial({
+							color: 0xFFFFFF,
+							transparent: false,
+							opacity: 0.9
+						})
+					);
+					mesh.position.set(300 * i, -80, 25);
+					scene.add(mesh);
 				}
 
 				//set auto rotation of current sphere
@@ -191,27 +199,6 @@
 
 			function toRadians(angle) {
 				return angle * (Math.PI / 180);
-			}
-
-			function nextIndex() {
-				index++;
-				cameraController.state = 0;
-				cameraController.destination = 300*index;
-				if(index > numSpheres-1) {
-					index =0;
-					cameraController.state = 2;
-				}
-				if (index == 0) backButton.style.display = 'none';
-				else backButton.style.display = 'inline'
-				history.replaceState({},"page", "?page=" + `${index}`);
-			}
-
-			function prevIndex() {
-				index--;
-				if (index ==0 ) backButton.style.display = 'none'; // cant go back anymore!
-				cameraController.state = 5;
-				cameraController.destination = 300*index;
-				history.replaceState({},"page", "?page=" + `${index}`);
 			}
 
 			//camera controller class that handles switching between spheres, and zooming in/out of spehres
@@ -277,8 +264,6 @@
 								blogtext.style.display = 'inline';
 								blogtext.innerHTML = textArray[index]
 
-								backButton.style.display = 'none';
-								nextButton.style.display = 'none';
 								info.innerHTML = 'Double click to exit'
 
 							} else if (distance < 90) {
@@ -303,8 +288,6 @@
 								currentSphere.scale.x = 1;
 								currentSphere.material.opacity = Math.min(1, currentSphere.material.opacity + 0.015);
 								blogtext.style.display = 'none';
-								backButton.style.display = 'inline';
-								nextButton.style.display = 'inline';
 								info.innerHTML = 'Double click to enter';
 							}
 						}
@@ -344,15 +327,12 @@
 				camera.lookAt(look.add(camera.position));
 				camera.updateProjectionMatrix();
 
-				//rotate all spheres, always
-				meshSphereArray.forEach(function(entry) {
-    			entry.rotation.y = Date.now()*0.0001;
-				});
 				//currentSphere.rotation.y = Date.now()*0.0001;
 				currentSphere.quaternion.multiplyQuaternions(autoRotationQuaternion, currentSphere.quaternion);
 				renderer.render( scene, camera );
 			}
 
 		</script>
+		<script src="js/three/snow.js"></script>
 	</body>
 </html>
