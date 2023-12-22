@@ -1,4 +1,4 @@
-# photospheres-threejs
+# globe
 photosphere blog/viewer in threeJS
 
 Run the following commands:
