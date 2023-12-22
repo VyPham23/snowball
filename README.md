@@ -1,5 +1,4 @@
-# globe
-photosphere blog/viewer in threeJS
+# Christmas Globe
 
 Run the following commands:
 
@@ -7,4 +6,5 @@ Run the following commands:
 npm install
 node main.js
 ```
-Then open http://127.0.0.1:8081 in a web browser.
+
+Open http://localhost:8081
